@@ -7,9 +7,11 @@ export default function WhatsAppButton() {
   const { businessDetails } = useFirebaseData();
   
   // Format phone number for WhatsApp URL (remove spaces, dashes, etc.)
-  const rawPhone = businessDetails?.phone?.replace(/\D/g, '') || '';
+  let rawPhone = businessDetails?.phone?.replace(/\D/g, '') || '';
+  if (rawPhone.startsWith('0')) {
+    rawPhone = '92' + rawPhone.slice(1); // Auto-format for Pakistan WhatsApp
+  }
   
-  // Ensure we have a valid format (e.g. adding country code if needed, but we'll assume the rawPhone is fine or starts with appropriate digits)
   // The customer message template:
   const message = encodeURIComponent("Hello! I'm interested in placing an order from your menu. Could you please help me?");
 

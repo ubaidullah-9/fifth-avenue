@@ -1,7 +1,92 @@
 import { menuCategories } from '../data';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useFirebaseData } from '../FirebaseDataContext';
 import { useState } from 'react';
+import { useCart, parsePrice } from '../CartContext';
+import { Plus, Check } from 'lucide-react';
+
+function MenuItemCard({ item }: { item: any }) {
+  const { addToCart } = useCart();
+  const [selectedSize, setSelectedSize] = useState<'Small' | 'Medium' | 'Large'>(
+    item.priceSmall ? 'Small' : (item.priceMedium ? 'Medium' : 'Large')
+  );
+  const [added, setAdded] = useState(false);
+
+  const hasSizes = item.category === 'pizza' && (item.priceSmall || item.priceMedium || item.priceLarge);
+
+  const handleAdd = () => {
+    const priceStr = hasSizes ? item[`price${selectedSize}`] : item.price;
+    addToCart({
+      id: hasSizes ? `${item.id}-${selectedSize.toLowerCase()}` : item.id,
+      name: item.name,
+      size: hasSizes ? selectedSize : undefined,
+      price: parsePrice(priceStr),
+      quantity: 1,
+      image: item.image,
+      type: 'menu'
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      className="bg-stone-950 rounded-2xl overflow-hidden border border-stone-800 flex flex-col group"
+    >
+      <div className="relative h-48 overflow-hidden bg-stone-800">
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+      </div>
+      <div className="p-6 flex flex-col flex-grow">
+        <div className="flex justify-between items-start mb-3">
+          <h4 className="text-xl font-bold text-white leading-tight">{item.name}</h4>
+          {hasSizes ? (
+            <div className="flex flex-col items-end text-sm font-bold text-[#FFB800] whitespace-nowrap ml-4 leading-tight">
+              {item.priceSmall && <span className={selectedSize === 'Small' ? '' : 'opacity-50'}>S: {item.priceSmall}</span>}
+              {item.priceMedium && <span className={selectedSize === 'Medium' ? '' : 'opacity-50'}>M: {item.priceMedium}</span>}
+              {item.priceLarge && <span className={selectedSize === 'Large' ? '' : 'opacity-50'}>L: {item.priceLarge}</span>}
+            </div>
+          ) : (
+            <span className="font-bold text-[#FFB800] whitespace-nowrap ml-4">{item.price}</span>
+          )}
+        </div>
+        <p className="text-stone-400 text-sm leading-relaxed mb-6 flex-grow">
+          {item.description}
+        </p>
+
+        {hasSizes && (
+          <div className="flex gap-2 mb-4 bg-stone-900 p-1 rounded-lg">
+            {['Small', 'Medium', 'Large'].map((size) => {
+              if (!item[`price${size}`]) return null;
+              return (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size as any)}
+                  className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-colors ${selectedSize === size ? 'bg-[#FFB800] text-stone-950' : 'text-stone-400 hover:text-white'}`}
+                >
+                  {size}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        <button 
+          onClick={handleAdd}
+          className={`w-full py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${added ? 'bg-green-500 text-white' : 'bg-stone-800 hover:bg-stone-700 text-white'}`}
+        >
+          {added ? <><Check className="w-4 h-4" /> Added</> : <><Plus className="w-4 h-4" /> Add to Order</>}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Menu() {
   const { menuItems, deals, businessDetails } = useFirebaseData();
@@ -37,43 +122,8 @@ export default function Menu() {
 
         {/* Menu Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {filteredItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-stone-950 rounded-2xl overflow-hidden border border-stone-800 flex flex-col group"
-            >
-              <div className="relative h-48 overflow-hidden bg-stone-800">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <div className="flex justify-between items-start mb-3">
-                  <h4 className="text-xl font-bold text-white leading-tight">{item.name}</h4>
-                  {item.category === 'pizza' && (item.priceSmall || item.priceMedium || item.priceLarge) ? (
-                    <div className="flex flex-col items-end text-sm font-bold text-[#FFB800] whitespace-nowrap ml-4 leading-tight">
-                      {item.priceSmall && <span>S: {item.priceSmall}</span>}
-                      {item.priceMedium && <span>M: {item.priceMedium}</span>}
-                      {item.priceLarge && <span>L: {item.priceLarge}</span>}
-                    </div>
-                  ) : (
-                    <span className="font-bold text-[#FFB800] whitespace-nowrap ml-4">{item.price}</span>
-                  )}
-                </div>
-                <p className="text-stone-400 text-sm leading-relaxed mb-6 flex-grow">
-                  {item.description}
-                </p>
-                <button className="w-full py-2.5 bg-stone-800 hover:bg-stone-700 text-white rounded-lg font-medium transition-colors">
-                  Order Now
-                </button>
-              </div>
-            </motion.div>
+          {filteredItems.map((item) => (
+            <MenuItemCard key={item.id} item={item} />
           ))}
         </div>
       </div>

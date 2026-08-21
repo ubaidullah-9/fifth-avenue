@@ -13,24 +13,29 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
 import WhatsAppButton from './components/WhatsAppButton';
+import CartDrawer from './components/CartDrawer';
 import { useEffect } from 'react';
 import { doc, getDocFromServer } from 'firebase/firestore';
 import { db } from './firebase';
 import { FirebaseDataProvider } from './FirebaseDataContext';
+import { CartProvider } from './CartContext';
 
 function MainSite() {
   return (
     <FirebaseDataProvider>
-      <Navbar />
-      <main>
-        <Hero />
-        <Features />
-        <Deals />
-        <Menu />
-        <Contact />
-      </main>
-      <Footer />
-      <WhatsAppButton />
+      <CartProvider>
+        <Navbar />
+        <main>
+          <Hero />
+          <Features />
+          <Deals />
+          <Menu />
+          <Contact />
+        </main>
+        <Footer />
+        <WhatsAppButton />
+        <CartDrawer />
+      </CartProvider>
     </FirebaseDataProvider>
   );
 }

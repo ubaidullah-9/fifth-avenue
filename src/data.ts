@@ -2,7 +2,7 @@ export const businessDetails = {
   name: "Fifth Avenue Pizza Co",
   branch: "Depalpur",
   address: "Prism Mall, Sarfaraz Gillani Road, Depalpur, 56180",
-  phone: "0304 1116613",
+  phone: "0309 9168967",
   hours: "Open Daily • 11:00 AM - 3:00 AM",
   services: ["Dine-in", "Takeaway", "Delivery"],
 };

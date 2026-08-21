@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X, Phone, ShoppingBag } from 'lucide-react';
 import { useFirebaseData } from '../FirebaseDataContext';
 import { motion, AnimatePresence } from 'motion/react';
 import BrandLogo from './BrandLogo';
+import { useCart } from '../CartContext';
 
 export default function Navbar() {
-  const { menuItems, deals, businessDetails } = useFirebaseData();
+  const { businessDetails } = useFirebaseData();
+  const { cartItems, setIsCartOpen } = useCart();
+  const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -30,9 +33,10 @@ export default function Navbar() {
             <BrandLogo className="w-40 sm:w-48" />
           </div>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+          {/* Actions & Mobile Toggle */}
+          <div className="flex items-center gap-4">
+            {/* Desktop Nav Links */}
+            <div className="hidden md:flex items-center space-x-8 mr-4">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
@@ -42,29 +46,44 @@ export default function Navbar() {
                   {link.name}
                 </a>
               ))}
-              <a
-                href={`tel:${businessDetails.phone.replace(/\\s/g, '')}`}
-                className="inline-flex items-center gap-2 bg-[#FFB800] hover:bg-[#e5a600] text-stone-950 font-bold px-5 py-2.5 rounded-full font-medium transition-all"
-              >
-                <Phone className="h-4 w-4" />
-                <span>Call Now</span>
-              </a>
             </div>
-          </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-stone-400 hover:text-white hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#FFB800]"
+            {/* Cart Button */}
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-2 text-stone-300 hover:text-[#FFB800] transition-colors"
             >
-              <span className="sr-only">Open main menu</span>
-              {isOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
+              <ShoppingBag className="w-6 h-6" />
+              {cartItemCount > 0 && (
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-stone-950 bg-[#FFB800] rounded-full transform translate-x-1/4 -translate-y-1/4">
+                  {cartItemCount}
+                </span>
               )}
             </button>
+
+            {/* Call Now - Desktop */}
+            <a
+              href={`tel:${businessDetails.phone.replace(/\\s/g, '')}`}
+              className="hidden md:inline-flex items-center gap-2 bg-[#FFB800] hover:bg-[#e5a600] text-stone-950 font-bold px-5 py-2.5 rounded-full font-medium transition-all"
+            >
+              <Phone className="h-4 w-4" />
+              <span>Call Now</span>
+            </a>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden flex items-center">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-stone-400 hover:text-white hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#FFB800]"
+              >
+                <span className="sr-only">Open main menu</span>
+                {isOpen ? (
+                  <X className="block h-6 w-6" aria-hidden="true" />
+                ) : (
+                  <Menu className="block h-6 w-6" aria-hidden="true" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
