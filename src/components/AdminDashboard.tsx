@@ -61,12 +61,22 @@ export default function AdminDashboard() {
     };
   }, [user, isAdmin]);
 
+  const [loginError, setLoginError] = useState<string | null>(null);
+
   const handleLogin = async () => {
+    setLoginError(null);
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      console.error('Login error:', e);
+      if (e.code === 'auth/popup-blocked') {
+        setLoginError('Popup blocked by browser. Please allow popups or open the app in a new tab.');
+      } else if (e.code === 'auth/unauthorized-domain') {
+        setLoginError('Domain not authorized in Firebase. Please add this URL to Firebase Auth authorized domains.');
+      } else {
+        setLoginError(`Login failed: ${e.message || e.code || 'Unknown error'}. Try opening the app in a new tab.`);
+      }
     }
   };
 
@@ -108,10 +118,21 @@ export default function AdminDashboard() {
           <p className="text-stone-400 mb-8">Sign in with your authorized Google account to manage the website content.</p>
           <button 
             onClick={handleLogin}
-            className="w-full bg-[#FFB800] hover:bg-[#e5a600] text-stone-950 font-bold py-3 px-4 rounded-xl transition-colors"
+            className="w-full bg-[#FFB800] hover:bg-[#e5a600] text-stone-950 font-bold py-3 px-4 rounded-xl transition-colors mb-4"
           >
             Sign in with Google
           </button>
+          
+          {loginError && (
+            <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-4 rounded-lg text-sm text-left">
+              {loginError}
+            </div>
+          )}
+          
+          <div className="text-xs text-stone-500 text-left mt-4">
+            <p className="font-bold text-stone-400 mb-1">Trouble signing in?</p>
+            <p>If you are viewing this inside an editor or preview window, popups might be blocked. Try opening the app in a <strong>new tab</strong> using the button in the top right of the preview window.</p>
+          </div>
         </div>
       </div>
     );
