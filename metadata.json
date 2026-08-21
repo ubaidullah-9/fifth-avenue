@@ -1,0 +1,8 @@
+{
+  "name": "Fifth Avenue Pizza Co - Depalpur",
+  "description": "Official website for Fifth Avenue Pizza Co in Depalpur. Serving delicious pizza with dine-in, takeaway, and delivery services until 3 AM.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
