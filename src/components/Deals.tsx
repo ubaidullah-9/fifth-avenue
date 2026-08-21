@@ -23,9 +23,10 @@ export default function Deals() {
               key={deal.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-stone-950 rounded-2xl p-1 relative overflow-hidden shadow-2xl group"
+              whileHover={{ y: -8 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+              className="bg-stone-950 rounded-2xl p-1 relative overflow-hidden shadow-2xl group cursor-pointer"
             >
               {/* Highlight background animation effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#FFB800] to-[#D31027] opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
@@ -36,21 +37,40 @@ export default function Deals() {
               </div>
 
               {/* Card Content with dashed ticket border */}
-              <div className="border-2 border-dashed border-[#FFB800]/30 group-hover:border-[#FFB800]/60 rounded-xl p-8 h-full flex flex-col relative z-10 transition-colors duration-300">
-                <h4 className="text-2xl font-black text-white mb-2 uppercase italic tracking-tight">{deal.title}</h4>
-                <p className="text-[#FFB800] font-black text-4xl mb-8 drop-shadow-md">{deal.price}</p>
+              <div className="border-2 border-dashed border-[#FFB800]/30 group-hover:border-[#FFB800]/60 rounded-xl h-full flex flex-col relative z-10 transition-colors duration-300 overflow-hidden bg-stone-950">
                 
-                <ul className="text-stone-300 mb-8 flex-grow space-y-3 font-medium">
-                  {deal.items.map((item, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <Ticket className="w-5 h-5 text-[#FFB800] flex-shrink-0" /> {item}
-                    </li>
-                  ))}
-                </ul>
-                
-                <button className="w-full py-3.5 bg-[#FFB800] hover:bg-[#e5a600] text-stone-950 font-bold rounded-lg transition-all active:scale-95 shadow-[0_0_15px_rgba(255,184,0,0.3)] hover:shadow-[0_0_25px_rgba(255,184,0,0.5)]">
-                  Claim Deal
-                </button>
+                {deal.image && (
+                  <div className="h-48 w-full relative overflow-hidden bg-stone-800 border-b-2 border-dashed border-[#FFB800]/20">
+                    <img 
+                      src={deal.image} 
+                      alt={deal.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-transparent"></div>
+                  </div>
+                )}
+
+                <div className={`p-6 flex flex-col flex-grow ${deal.image ? 'pt-4' : ''}`}>
+                  <h4 className="text-2xl font-black text-white mb-2 uppercase italic tracking-tight">{deal.title}</h4>
+                  <p className="text-[#FFB800] font-black text-4xl mb-6 drop-shadow-md">{deal.price}</p>
+                  
+                  <ul className="text-stone-300 mb-8 flex-grow space-y-3 font-medium">
+                    {deal.items.map((item: string, i: number) => (
+                      <li key={i} className="flex items-center gap-3 text-sm sm:text-base">
+                        <Ticket className="w-5 h-5 text-[#FFB800] flex-shrink-0" /> {item}
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <motion.button 
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full py-3.5 bg-[#FFB800] hover:bg-[#e5a600] text-stone-950 font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(255,184,0,0.3)] hover:shadow-[0_0_25px_rgba(255,184,0,0.5)] mt-auto"
+                  >
+                    Claim Deal
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           ))}

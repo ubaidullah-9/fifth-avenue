@@ -14,7 +14,8 @@ service cloud.firestore {
     
     function isAdmin() {
       return (isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid))) || 
-             (isSignedIn() && request.auth.token.email.lower() == 'ubaidullah.bhatti99@gmail.com');
+             (isSignedIn() && exists(/databases/$(database)/documents/admin_profiles/$(request.auth.uid))) ||
+             (isSignedIn() && request.auth.token.email != null && request.auth.token.email.lower() == 'ubaidullah.bhatti99@gmail.com');
     }
 
     function isValidId(id) {
@@ -90,6 +91,13 @@ service cloud.firestore {
       allow create: if isAdmin() && isValidId(adminId) && isValidAdmin(incoming());
       allow update: if isAdmin() && isValidId(adminId) && isValidAdmin(incoming()) && incoming().diff(existing()).affectedKeys().hasOnly(['email']);
       allow delete: if isAdmin() && isValidId(adminId);
+    }
+
+    match /admin_profiles/{userId} {
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
+      allow create: if isSignedIn() && request.auth.uid == userId && incoming().keys().hasAll(['username', 'fullName', 'phone', 'designation', 'email', 'role', 'createdAt']);
+      allow update: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
+      allow delete: if isAdmin();
     }
   }
 }

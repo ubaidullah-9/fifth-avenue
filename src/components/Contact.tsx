@@ -15,7 +15,7 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-sm font-bold tracking-widest text-[#FFB800] uppercase mb-3">Visit Us</h2>
@@ -60,12 +60,12 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="h-[500px] w-full rounded-2xl overflow-hidden border border-stone-800 shadow-2xl relative bg-stone-900 flex items-center justify-center"
+            className="h-[500px] w-full rounded-2xl overflow-hidden border border-stone-800 shadow-2xl relative bg-stone-900 flex items-center justify-center group"
           >
              {/* Map Placeholder */}
-             <div className="absolute inset-0 opacity-40">
+             <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-700">
                 <img 
                   src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800" 
                   alt="Map Placeholder" 
@@ -76,14 +76,16 @@ export default function Contact() {
                 <MapPin className="w-12 h-12 text-[#FFB800] mb-4" />
                 <h4 className="text-xl font-bold text-white mb-2">{businessDetails.name}</h4>
                 <p className="text-stone-300 text-sm mb-4">{businessDetails.address}</p>
-                <a 
+                <motion.a 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(businessDetails.name + ' ' + businessDetails.address)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#FFB800] hover:bg-[#e5a600] text-stone-950 font-bold px-6 py-2.5 rounded-full font-medium transition-colors w-full"
                 >
                   Get Directions
-                </a>
+                </motion.a>
              </div>
           </motion.div>
 

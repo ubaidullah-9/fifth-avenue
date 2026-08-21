@@ -105,6 +105,7 @@ export const deals = [
     title: "Midnight Craving",
     price: "Rs. 1,699",
     savings: "Rs. 300",
+    image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&q=80&w=600",
     items: [
       "1 Large Signature Pizza",
       "1 Ltr Cold Drink",
@@ -116,6 +117,7 @@ export const deals = [
     title: "Family Fiesta",
     price: "Rs. 2,999",
     savings: "Rs. 500",
+    image: "https://images.unsplash.com/photo-1544982503-9f984c14501a?auto=format&fit=crop&q=80&w=600",
     items: [
       "2 Large Classic Pizzas",
       "1 Oven Baked Hot Wings",
@@ -127,6 +129,7 @@ export const deals = [
     title: "Student Deal",
     price: "Rs. 650",
     savings: "Rs. 150",
+    image: "https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?auto=format&fit=crop&q=80&w=600",
     items: [
       "1 Small Classic Pizza",
       "1 Regular Drink"

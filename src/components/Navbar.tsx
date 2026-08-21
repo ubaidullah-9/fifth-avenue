@@ -17,7 +17,12 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed w-full bg-stone-900/95 backdrop-blur-md z-50 border-b border-stone-800">
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed w-full bg-stone-900/95 backdrop-blur-md z-50 border-b border-stone-800"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -95,6 +100,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 }

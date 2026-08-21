@@ -29,9 +29,10 @@ export default function Features() {
               key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-stone-900 border border-stone-800 p-8 rounded-2xl text-center hover:border-[#FFB800]/50 transition-colors group"
+              whileHover={{ y: -8 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+              className="bg-stone-900 border border-stone-800 p-8 rounded-2xl text-center hover:border-[#FFB800]/50 transition-colors group cursor-pointer"
             >
               <div className="inline-flex items-center justify-center p-4 bg-stone-950 rounded-full mb-6 group-hover:scale-110 transition-transform">
                 {feature.icon}

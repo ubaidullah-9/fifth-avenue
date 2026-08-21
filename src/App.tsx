@@ -12,6 +12,7 @@ import Menu from './components/Menu';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
+import WhatsAppButton from './components/WhatsAppButton';
 import { useEffect } from 'react';
 import { doc, getDocFromServer } from 'firebase/firestore';
 import { db } from './firebase';
@@ -29,6 +30,7 @@ function MainSite() {
         <Contact />
       </main>
       <Footer />
+      <WhatsAppButton />
     </FirebaseDataProvider>
   );
 }
