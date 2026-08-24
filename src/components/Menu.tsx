@@ -96,15 +96,15 @@ export default function Menu() {
   const filteredItems = menuItems.filter(item => item.category === activeCategory);
 
   return (
-    <section id="menu" className="py-24 bg-stone-900">
+    <section id="menu" className="py-16 md:py-24 bg-stone-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-sm font-bold tracking-widest text-[#FFB800] uppercase mb-3">Our Menu</h2>
-          <h3 className="text-4xl font-extrabold text-white">Explore Our Delicious Range</h3>
+          <h3 className="text-3xl md:text-4xl font-extrabold text-white">Explore Our Delicious Range</h3>
         </div>
 
         {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-4 mb-16">
+        <div className="flex overflow-x-auto whitespace-nowrap scrollbar-hide py-2 md:flex-wrap justify-start md:justify-center gap-3 sm:gap-4 mb-12 md:mb-16 -mx-4 px-4 sm:mx-0 sm:px-0">
           {menuCategories.map((category) => (
             <button
               key={category.id}
@@ -121,7 +121,7 @@ export default function Menu() {
         </div>
 
         {/* Menu Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {filteredItems.map((item) => (
             <MenuItemCard key={item.id} item={item} />
           ))}

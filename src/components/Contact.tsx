@@ -6,11 +6,11 @@ export default function Contact() {
   const { menuItems, deals, businessDetails } = useFirebaseData();
 
   return (
-    <section id="contact" className="py-24 bg-stone-950 relative overflow-hidden">
+    <section id="contact" className="py-16 md:py-24 bg-stone-950 relative overflow-hidden">
       <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-500 via-stone-950 to-stone-950"></div>
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -19,8 +19,8 @@ export default function Contact() {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-sm font-bold tracking-widest text-[#FFB800] uppercase mb-3">Visit Us</h2>
-            <h3 className="text-4xl font-extrabold text-white mb-8">Ready for a Slice?</h3>
-            <p className="text-stone-300 text-lg mb-10 leading-relaxed">
+            <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-6 md:mb-8">Ready for a Slice?</h3>
+            <p className="text-stone-300 text-base md:text-lg mb-8 md:mb-10 leading-relaxed">
               Drop by our Depalpur branch to experience our delicious range of freshly baked pizzas, or give us a call to get it delivered right to your doorstep.
             </p>
 
@@ -62,7 +62,7 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="h-[500px] w-full rounded-2xl overflow-hidden border border-stone-800 shadow-2xl relative bg-stone-900 flex items-center justify-center group"
+            className="h-[400px] md:h-[500px] w-full rounded-2xl overflow-hidden border border-stone-800 shadow-2xl relative bg-stone-900 flex items-center justify-center group"
           >
              {/* Map Placeholder */}
              <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-700">

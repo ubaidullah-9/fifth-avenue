@@ -83,7 +83,7 @@ export default function Deals() {
   const { deals } = useFirebaseData();
 
   return (
-    <section id="deals" className="py-24 bg-stone-900 relative">
+    <section id="deals" className="py-16 md:py-24 bg-stone-900 relative">
       <div className="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-[#FFB800] via-stone-900 to-stone-900"></div>
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,10 +91,10 @@ export default function Deals() {
           <h2 className="text-sm font-bold tracking-widest text-[#FFB800] uppercase mb-3 flex items-center justify-center gap-2">
             <Flame className="w-5 h-5 text-[#D31027]" /> Special Offers
           </h2>
-          <h3 className="text-4xl font-extrabold text-white">Exclusive Deals</h3>
+          <h3 className="text-3xl md:text-4xl font-extrabold text-white">Exclusive Deals</h3>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {deals.map((deal, index) => (
             <DealCard key={deal.id} deal={deal} index={index} />
           ))}
