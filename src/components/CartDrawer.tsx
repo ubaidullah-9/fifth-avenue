@@ -1,18 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Plus, Minus, ShoppingBag } from 'lucide-react';
+import { X, Plus, Minus, ShoppingBag, History, Clock } from 'lucide-react';
 import { useCart } from '../CartContext';
 import { useFirebaseData } from '../FirebaseDataContext';
+import { db } from '../firebase';
+import { collection, addDoc, query, where, onSnapshot } from 'firebase/firestore';
+
+// Generate or retrieve a guest customer ID for order history
+const getCustomerId = () => {
+  let id = localStorage.getItem('customer_id');
+  if (!id) {
+    id = 'guest_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('customer_id', id);
+  }
+  return id;
+};
 
 export default function CartDrawer() {
   const { cartItems, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
   const { businessDetails } = useFirebaseData();
-  const [checkoutStep, setCheckoutStep] = useState<'cart' | 'details'>('cart');
+  const [checkoutStep, setCheckoutStep] = useState<'cart' | 'details' | 'history'>('cart');
   const [orderDetails, setOrderDetails] = useState({ name: '', address: '', instructions: '' });
+  
+  const [orderHistory, setOrderHistory] = useState<any[]>([]);
+  const customerId = getCustomerId();
 
-  const handleCheckout = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (isCartOpen && checkoutStep === 'history') {
+      const q = query(collection(db, 'orders'), where('customerId', '==', customerId));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => b.createdAt - a.createdAt);
+        setOrderHistory(orders);
+      });
+      return () => unsubscribe();
+    }
+  }, [isCartOpen, checkoutStep, customerId]);
+
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Save to Firestore
+    try {
+      await addDoc(collection(db, 'orders'), {
+        customerId,
+        customerName: orderDetails.name,
+        address: orderDetails.address,
+        instructions: orderDetails.instructions,
+        items: cartItems.map(item => ({ name: item.name, size: item.size || null, price: item.price, quantity: item.quantity })),
+        total: cartTotal,
+        status: 'pending',
+        createdAt: Date.now()
+      });
+    } catch (error) {
+      console.error("Error saving order:", error);
+    }
+
     // Format WhatsApp Message
     const itemsText = cartItems.map(item => 
       `${item.quantity}x ${item.name}${item.size ? ` (${item.size})` : ''} - Rs. ${item.price * item.quantity}`
@@ -56,19 +99,60 @@ export default function CartDrawer() {
             className="fixed top-0 right-0 h-full w-full max-w-md bg-stone-950 border-l border-stone-800 shadow-2xl z-[101] flex flex-col"
           >
             <div className="flex items-center justify-between p-6 border-b border-stone-800">
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                <ShoppingBag className="text-[#FFB800]" /> Your Order
-              </h2>
-              <button 
-                onClick={() => setIsCartOpen(false)}
-                className="p-2 hover:bg-stone-800 rounded-full transition-colors"
-              >
-                <X className="w-6 h-6 text-stone-400" />
-              </button>
+              <div className="flex items-center gap-4">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <ShoppingBag className="text-[#FFB800]" /> {checkoutStep === 'history' ? 'History' : 'Your Order'}
+                </h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setCheckoutStep(checkoutStep === 'history' ? 'cart' : 'history')}
+                  className="p-2 hover:bg-stone-800 rounded-full transition-colors text-stone-400 hover:text-[#FFB800]"
+                  title="Order History"
+                >
+                  <History className="w-6 h-6" />
+                </button>
+                <button 
+                  onClick={() => setIsCartOpen(false)}
+                  className="p-2 hover:bg-stone-800 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6 text-stone-400" />
+                </button>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6">
-              {cartItems.length === 0 ? (
+              {checkoutStep === 'history' ? (
+                <div className="space-y-4">
+                  {orderHistory.length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-stone-500 py-12">
+                      <Clock className="w-16 h-16 mb-4 opacity-50" />
+                      <p>No past orders found.</p>
+                    </div>
+                  ) : (
+                    orderHistory.map(order => (
+                      <div key={order.id} className="bg-stone-900 border border-stone-800 p-4 rounded-xl">
+                        <div className="flex justify-between items-start mb-3 border-b border-stone-800 pb-3">
+                          <div>
+                            <p className="text-sm text-stone-400">{new Date(order.createdAt).toLocaleDateString()} {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                            <p className="font-bold text-[#FFB800]">Rs. {order.total}</p>
+                          </div>
+                          <span className="px-2 py-1 text-xs font-bold uppercase rounded bg-stone-800 text-stone-300">
+                            {order.status}
+                          </span>
+                        </div>
+                        <ul className="text-sm space-y-1">
+                          {order.items.map((item: any, i: number) => (
+                            <li key={i} className="text-stone-300 flex justify-between">
+                              <span>{item.quantity}x {item.name} {item.size ? `(${item.size})` : ''}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))
+                  )}
+                </div>
+              ) : cartItems.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-stone-500">
                   <ShoppingBag className="w-16 h-16 mb-4 opacity-50" />
                   <p>Your cart is empty</p>
@@ -122,7 +206,7 @@ export default function CartDrawer() {
               )}
             </div>
 
-            {cartItems.length > 0 && (
+            {checkoutStep !== 'history' && cartItems.length > 0 && (
               <div className="p-6 border-t border-stone-800 bg-stone-950">
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-stone-400">Total Amount</span>
