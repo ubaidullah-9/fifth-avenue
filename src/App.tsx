@@ -5,6 +5,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -63,6 +64,7 @@ export default function App() {
           <Route path="/admin/*" element={<AdminDashboard />} />
         </Routes>
         <Analytics />
+        <SpeedInsights />
       </div>
     </Router>
   );
